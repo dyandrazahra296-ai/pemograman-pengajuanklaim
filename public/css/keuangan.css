@@ -1,0 +1,275 @@
+/* ===============================
+   MAIN LAYOUT
+=================================*/
+.main {
+    padding:30px;
+    background:#f6f8fb;
+}
+
+.topbar h1 {
+    font-size:26px;
+    font-weight:600;
+    color:#1f2937;
+}
+
+/* ===============================
+   CONTROLS
+=================================*/
+.dashboard-controls {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin:25px 0;
+    flex-wrap:wrap;
+}
+
+.search-box {
+    width:260px;
+    padding:10px 14px;
+    border-radius:10px;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.search-box:focus {
+    outline:none;
+    border-color:#4f46e5;
+    box-shadow:0 0 0 3px rgba(79,70,229,0.15);
+}
+
+.nav-btn {
+    background:linear-gradient(135deg, #6366f1, #4f46e5);
+    border:none;
+    color:#fff;
+    padding:9px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.nav-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 6px 12px rgba(79,70,229,0.25);
+}
+
+/* ===============================
+   CARD
+=================================*/
+.karyawan-card {
+    background:#fff;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.06);
+    max-width:950px;
+    margin:auto;
+    animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(8px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+#namaKaryawan {
+    text-align:center;
+    font-size:22px;
+    font-weight:600;
+    margin-bottom:20px;
+    color:#374151;
+}
+
+/* ===============================
+   STAT BOX
+=================================*/
+.stats-row {
+    display:flex;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+}
+
+.stat-box {
+    flex:1;
+    min-width:160px;
+    padding:18px;
+    border-radius:14px;
+    text-align:center;
+    border:1px solid #eceff3;
+    transition:all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform:translateY(-4px);
+    box-shadow:0 6px 14px rgba(0,0,0,0.08);
+}
+
+.stat-box div {
+    font-size:13px;
+    color:#6b7280;
+    margin-bottom:6px;
+}
+
+.stat-box h3 {
+    font-size:18px;
+    font-weight:600;
+    color:#111827;
+    margin:0;
+}
+
+/* NORMAL COLORS */
+.stat-box.limit  { background:#eef2ff; }
+.stat-box.total  { background:#ecfdf5; }
+.stat-box.klaim  { background:#fff7ed; }
+
+/* ===============================
+   WARNING & DANGER STATE
+=================================*/
+.stat-box.warning {
+    background:#ff4d4d !important;
+    color:#fff !important;
+    border:none;
+}
+
+.stat-box.warning div,
+.stat-box.warning h3 {
+    color:#fff !important;
+}
+
+.stat-box.danger {
+    background:#b71c1c !important;
+    color:#fff !important;
+    border:none;
+    box-shadow:0 0 15px rgba(183,28,28,0.6);
+}
+
+.stat-box.danger div,
+.stat-box.danger h3 {
+    color:#fff !important;
+}
+
+/* ===============================
+   PROGRESS BAR
+=================================*/
+.limit-progress-wrapper {
+    margin-top:25px;
+}
+
+.limit-progress-bar {
+    width:100%;
+    height:14px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+#limitProgressFill {
+    height:100%;
+    width:0%;
+    background:#6366f1;
+    transition:all 0.4s ease;
+}
+
+.limit-text {
+    margin-top:8px;
+    font-size:14px;
+    font-weight:500;
+    color:#374151;
+}
+
+/* ===============================
+   CHART
+=================================*/
+#chartKaryawan {
+    margin-top:30px;
+}
+
+/* ===============================
+   RESPONSIVE
+=================================*/
+@media(max-width:768px){
+    .search-box {
+        width:100%;
+    }
+
+    .stats-row {
+        flex-direction:column;
+    }
+
+    .karyawan-card {
+        padding:20px;
+    }
+}
+
+/* ===============================
+   MODERN POPUP
+=================================*/
+.modern-popup-overlay {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.4);
+    z-index:999;
+    backdrop-filter:blur(2px);
+}
+
+.modern-popup {
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%) scale(0.7);
+    min-width:320px;
+    max-width:400px;
+    background:#fff;
+    border-radius:16px;
+    padding:30px 25px;
+    text-align:center;
+    color:#111827;
+    font-size:18px;
+    font-weight:600;
+    box-shadow:0 12px 28px rgba(0,0,0,0.25);
+    z-index:1000;
+    opacity:0;
+    transition:all 0.3s ease;
+}
+
+.modern-popup.show {
+    opacity:1;
+    transform:translate(-50%, -50%) scale(1);
+}
+
+.modern-popup p {
+    margin:20px 0;
+    font-size:18px;
+}
+
+.modern-popup button {
+    background:linear-gradient(135deg, #6366f1, #4f46e5);
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    font-size:15px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.modern-popup button:hover {
+    transform:translateY(-2px);
+    box-shadow:0 6px 12px rgba(79,70,229,0.25);
+}
+
+
+.text-danger-custom {
+        color: #f87171 !important; /* Warna merah yang lebih soft untuk dark theme */
+    }
+
+    .text-danger-custom:hover {
+        background: rgba(239, 68, 68, 0.15) !important;
+    }
