@@ -93,7 +93,6 @@
                 padding: 20px 15px;
             }
         }
-
     </style>
 </head>
 <body>
@@ -102,7 +101,6 @@
 
 <div class="main-content">
     <div class="container" style="max-width:520px">
-
         <div class="card">
             <h4 class="mb-4">🔐 Ganti Password</h4>
 
@@ -112,7 +110,7 @@
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="<?= base_url('change-password') ?>">
+            <form method="post" action="<?= base_url('karyawan/change-password/update') ?>">
                 <?= csrf_field() ?>
 
                 <div class="mb-3">
@@ -132,16 +130,11 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <button class="btn btn-primary">
-                        Simpan Password
-                    </button>
-                    <a href="<?= base_url('/medical-claims') ?>" class="btn btn-secondary">
-                        Batal
-                    </a>
+                    <button class="btn btn-primary">Simpan Password</button>
+                    <a href="<?= base_url('karyawan/dashboard') ?>" class="btn btn-secondary">Batal</a>
                 </div>
             </form>
         </div>
-
     </div>
 </div>
 
