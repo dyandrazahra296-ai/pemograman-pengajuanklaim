@@ -25,14 +25,51 @@ class MedicalClaimController extends BaseController
         if (!$employee) return "Data profil karyawan tidak ditemukan.";
 
         $limit = $limitModel->where(['employee_id' => $employeeId, 'year' => $year])->first();
-        $claims = $claimModel->where('employee_id', $employeeId)->orderBy('claim_date', 'DESC')->findAll();
+        $claims = $claimModel
+             ->select('medical_claims.*, dependents.full_name, dependents.relationship')
+             ->join('dependents', 'dependents.dependent_id = medical_claims.dependent_id', 'left')
+             ->where('medical_claims.employee_id', $employeeId)
+             ->orderBy('claim_date', 'DESC')
+             ->findAll();
 
+             // =====================
+// HITUNG CHART BULANAN
+// =====================
+$chartBulanan = array_fill(0, 6, 0); // Jan–Jun
+
+foreach ($claims as $c) {
+    $bulan = (int) date('n', strtotime($c['claim_date'])); // 1-12
+    if ($bulan <= 6) {
+        $chartBulanan[$bulan - 1]++;
+    }
+}
+
+// =====================
+// KOMPOSISI KLAIM
+// =====================
+$komposisi = [0, 0, 0]; 
+// [karyawan, pasangan, anak]
+
+foreach ($claims as $c) {
+    if (empty($c['dependent_id'])) {
+        $komposisi[0]++; // karyawan
+    } else {
+        $rel = strtolower($c['relationship'] ?? '');
+        if (str_contains($rel, 'istri') || str_contains($rel, 'suami')) {
+            $komposisi[1]++;
+        } else {
+            $komposisi[2]++;
+        }
+    }
+}
         return view('karyawan/employee/dashboard', [
-            'employee'   => $employee,
-            'dependents' => $dependentModel->where('employee_id', $employeeId)->findAll(),
-            'claims'     => $claims,
-            'limit'      => $limit
-        ]);
+    'employee'      => $employee,
+    'dependents'    => $dependentModel->where('employee_id', $employeeId)->findAll(),
+    'claims'        => $claims,
+    'limit'         => $limit,
+    'chartBulanan'  => $chartBulanan,
+    'komposisi'     => $komposisi
+]);
     }
 
     public function create()
@@ -45,22 +82,23 @@ class MedicalClaimController extends BaseController
     }
 
     public function submitClaim()
-    {
-        $employeeId = session('employee_id');
-        $claimModel = new MedicalClaimModel();
-        
-        $claimModel->insert([
-            'employee_id'       => $employeeId,
-            'dependent_id'      => $this->request->getPost('dependent_id') ?: null,
-            'claim_date'        => $this->request->getPost('claim_date'),
-            'claim_amount'      => $this->request->getPost('claim_amount'),
-            'claim_description' => $this->request->getPost('claim_description'),
-            'status'            => 'MENUNGGU_HRD',
-            'created_at'        => date('Y-m-d H:i:s')
-        ]);
+{
+    $employeeId = session('employee_id');
+    $claimModel = new \App\Models\MedicalClaimModel();
 
-        return redirect()->to(base_url('karyawan/dashboard'))->with('success', 'Klaim berhasil diajukan');
-    }
+    $claimModel->insert([
+        'employee_id'       => $employeeId,
+        'dependent_id'      => $this->request->getPost('dependent_id') ?: null,
+        'claim_date'        => $this->request->getPost('claim_date'),
+        'claim_amount'      => str_replace('.', '', $this->request->getPost('claim_amount')),
+        'claim_description' => $this->request->getPost('claim_description'),
+        'status'            => 'PENGAJUAN', // ✅ WAJIB INI
+        'created_at'        => date('Y-m-d H:i:s')
+    ]);
+
+    return redirect()->to(base_url('karyawan/dashboard'))
+        ->with('success', 'Klaim berhasil diajukan');
+}
     // Menampilkan form pengajuan plafon
 public function ajukanPlafon()
 {
