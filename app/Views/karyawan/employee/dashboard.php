@@ -103,9 +103,9 @@ $countClaims = count($claims ?? []);
         <?php else: foreach ($claims as $c): ?>
             <tr>
                 <td><?= date('Y-m-d', strtotime($c['claim_date'])) ?></td>
-                <td>
-<?php if (!empty($c['dependent_name'])): ?>
-    <?= esc($c['dependent_name']) ?> (<?= esc($c['relationship']) ?>)
+               <td>
+<?php if ($c['dependent_id']): ?>
+    <?= $c['full_name'] ?> (<?= $c['relationship'] ?>)
 <?php else: ?>
     Diri Sendiri
 <?php endif; ?>
@@ -113,21 +113,29 @@ $countClaims = count($claims ?? []);
 
                 <td>Rp <?= number_format($c['claim_amount'],0,',','.') ?></td>
                 <td>
-                    <?php
-                   $status = strtoupper($c['status']);
+<?php
+$status = strtoupper($c['status']);
 
-                    if (str_contains($status, 'SETUJUI')) {
-                    echo '<span class="badge bg-success">Disetujui</span>';
-                    } 
-                    elseif (str_contains($status, 'TOLAK')) {
-                    echo '<span class="badge bg-danger">Ditolak</span>';
-                    } 
-                    else {
-                    echo '<span class="badge bg-warning text-dark">Menunggu</span>';
-                    }   
+switch ($status) {
 
-                    ?>
-                </td>
+    case 'DIBAYARKAN_KEUANGAN':
+        echo '<span class="badge bg-primary">Dibayarkan</span>';
+        break;
+
+    case 'DISETUJUI_HRD':
+        echo '<span class="badge bg-success">Disetujui HRD</span>';
+        break;
+
+    case 'DITOLAK_HRD':
+        echo '<span class="badge bg-danger">Ditolak HRD</span>';
+        break;
+
+    case 'PENGAJUAN':
+    default:
+        echo '<span class="badge bg-warning text-dark">Menunggu</span>';
+}
+?>
+</td>
             </tr> 
         <?php endforeach; endif; ?>
         </tbody>
@@ -162,6 +170,13 @@ new Chart(document.getElementById('pieChart'), {
         }]
     },
     options: { maintainAspectRatio:false }
+});
+
+const rupiah = document.getElementById('rupiah');
+
+rupiah.addEventListener('input', function(e) {
+    let value = this.value.replace(/\D/g, '');
+    this.value = new Intl.NumberFormat('id-ID').format(value);
 });
 </script>
 
