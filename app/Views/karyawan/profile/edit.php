@@ -38,7 +38,7 @@
                             Simpan Perubahan
                         </button>
 
-                        <a href="<?= base_url('/karyawan/profile') ?>"
+                        <a href="<?= base_url('/karyawan/profile/index') ?>"
                            class="btn btn-light w-100 mt-2">
                            Batal
                         </a>
