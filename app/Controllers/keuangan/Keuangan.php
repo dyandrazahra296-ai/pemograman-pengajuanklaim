@@ -4,6 +4,7 @@ namespace App\Controllers\Keuangan; // Tambahkan \Keuangan di sini!
 use App\Controllers\BaseController; // Wajib panggil ini karena pindah folder
 use App\Models\Keuangan\MedicalClaimModel;
 use Dompdf\Dompdf;
+use App\Models\ClaimLimitModel;
 
 class Keuangan extends BaseController
 {
@@ -60,10 +61,36 @@ class Keuangan extends BaseController
         return view('keuangan/klaim',$data);
     }
 
-    public function bayar($id){
-        $this->claimModel->update($id,['status'=>'DIBAYARKAN_KEUANGAN','paid_at'=>date('Y-m-d H:i:s')]);
-        return redirect()->to('/keuangan/klaim');
+    public function bayar($id)
+{
+    $limitModel = new ClaimLimitModel();
+
+    // Ambil data klaim
+    $claim = $this->claimModel->find($id);
+    if (!$claim) {
+        return redirect()->back()->with('error','Data tidak ditemukan');
     }
+
+    // Ambil limit karyawan
+    $limit = $limitModel
+        ->where('employee_id', $claim['employee_id'])
+        ->where('year', date('Y'))
+        ->first();
+
+    if ($limit) {
+        $limitModel->update($limit['claim_limit_id'], [
+            'used_amount' => $limit['used_amount'] + $claim['claim_amount']
+        ]);
+    }
+
+    // Update status dibayar
+    $this->claimModel->update($id, [
+        'status'  => 'DIBAYARKAN_KEUANGAN',
+        'paid_at' => date('Y-m-d H:i:s')
+    ]);
+
+    return redirect()->to('/keuangan/klaim');
+}
 
     public function riwayat()
 {
